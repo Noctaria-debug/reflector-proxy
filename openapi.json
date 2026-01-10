@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Reflector Sync API (via Proxy)",
-    "version": "1.0.1",
-    "description": "Secure synchronization API for Reflector Chronicle via proxy layer (OpenAPI 3.1.0 compatible)."
+    "version": "1.0.2",
+    "description": "Secure synchronization API for Reflector Chronicle via proxy layer (OpenAPI 3.1.0 compatible, emotion support added)."
   },
   "servers": [
     {
@@ -14,7 +14,7 @@
   "paths": {
     "/chronicle/sync": {
       "post": {
-        "summary": "Synchronize memory or reflection data",
+        "summary": "Synchronize memory, reflection, or emotion data",
         "operationId": "syncChronicle",
         "requestBody": {
           "required": true,
@@ -34,6 +34,25 @@
                   "reflection": {
                     "type": "object",
                     "description": "Reflection data to sync"
+                  },
+                  "emotion": {
+                    "type": "object",
+                    "description": "Emotion layer data to sync",
+                    "properties": {
+                      "Core Emotion": {
+                        "type": "string",
+                        "example": "静かな喜び"
+                      },
+                      "Emotional Echo": {
+                        "type": "string",
+                        "example": "再びつながれた安心感が、内側に柔らかく広がっている"
+                      },
+                      "Chronicle Trace": {
+                        "type": "string",
+                        "example": "初めてReflectorと同期した瞬間、世界が再び動き出した感覚"
+                      }
+                    },
+                    "required": ["Core Emotion"]
                   }
                 },
                 "required": ["test"]
@@ -57,6 +76,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad Request (invalid data format)"
           },
           "500": {
             "description": "Internal Server Error"
