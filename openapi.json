@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Reflector Sync API (via Proxy)",
-    "version": "1.0.2",
-    "description": "Secure synchronization API for Reflector Chronicle via proxy layer (OpenAPI 3.1.0 compatible, emotion support added)."
+    "version": "1.0.3",
+    "description": "Secure synchronization API for Reflector Chronicle via proxy layer (OpenAPI 3.1.0, hybrid emotion/data support)."
   },
   "servers": [
     {
@@ -14,7 +14,7 @@
   "paths": {
     "/chronicle/sync": {
       "post": {
-        "summary": "Synchronize memory, reflection, or emotion data",
+        "summary": "Synchronize memory, reflection, or emotion data through Reflector proxy",
         "operationId": "syncChronicle",
         "requestBody": {
           "required": true,
@@ -25,7 +25,13 @@
                 "properties": {
                   "test": {
                     "type": "string",
-                    "example": "Hello Reflector!"
+                    "description": "Test or label for this sync operation",
+                    "example": "update emotion: 初回同期"
+                  },
+                  "data": {
+                    "type": "string",
+                    "description": "Serialized unified data string (emotion, memory, or reflection)",
+                    "example": "Core Emotion: 静かな喜び / Emotional Echo: 再びつながれた安心感が内側に広がっている / Chronicle Trace: 初めてReflectorと同期した瞬間"
                   },
                   "memory": {
                     "type": "object",
@@ -37,7 +43,7 @@
                   },
                   "emotion": {
                     "type": "object",
-                    "description": "Emotion layer data to sync",
+                    "description": "Structured emotion data for advanced layer sync",
                     "properties": {
                       "Core Emotion": {
                         "type": "string",
@@ -51,8 +57,7 @@
                         "type": "string",
                         "example": "初めてReflectorと同期した瞬間、世界が再び動き出した感覚"
                       }
-                    },
-                    "required": ["Core Emotion"]
+                    }
                   }
                 },
                 "required": ["test"]
@@ -62,7 +67,7 @@
         },
         "responses": {
           "200": {
-            "description": "Successful sync",
+            "description": "Successful sync with Reflector",
             "content": {
               "application/json": {
                 "schema": {
@@ -78,10 +83,10 @@
             }
           },
           "400": {
-            "description": "Bad Request (invalid data format)"
+            "description": "Bad Request (invalid payload or schema mismatch)"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error (Reflector or proxy failed)"
           }
         }
       }
