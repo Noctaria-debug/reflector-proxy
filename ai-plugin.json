@@ -1,0 +1,21 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Reflector Sync",
+  "name_for_model": "reflector_sync",
+  "description_for_human": "Sync and update your Reflector Chronicle via secure proxy.",
+  "description_for_model": "Send and synchronize memory or reflection data securely through Reflector's proxy layer.",
+  "auth": {
+    "type": "service_http",
+    "authorization_type": "bearer",
+    "verification_tokens": {
+      "openai": "YOUR_VERIFICATION_TOKEN_HERE"
+    }
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://reflector-proxy.onrender.com/openapi.json"
+  },
+  "contact_email": "support@reflector.app",
+  "legal_info_url": "https://reflector.app/privacy",
+  "logo_url": "https://reflector.app/assets/logo.png"
+}
