@@ -25,5 +25,10 @@
       "url": "https://reflector-proxy.onrender.com",
       "description": "Primary Reflector Proxy Server"
     }
-  ]
+  ],
+  "info": {
+    "title": "Reflector Sync Action",
+    "version": "1.0.0",
+    "description": "Action connector for Reflector Chronicle via secure proxy"
+  }
 }
