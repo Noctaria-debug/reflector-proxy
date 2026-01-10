@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.json());
 
-// ✅ ステータス確認用（ルート）
+// ✅ ルートステータス
 app.get("/", (req, res) => {
   res.json({
     status: "ok",
@@ -21,16 +21,19 @@ app.get("/", (req, res) => {
   });
 });
 
-// ✅ OpenAI用スキーマファイル
+// ✅ ai-plugin.json を正しい Content-Type で返す
 app.get("/ai-plugin.json", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
   res.sendFile(path.join(__dirname, "ai-plugin.json"));
 });
 
+// ✅ openapi.json を正しい Content-Type で返す
 app.get("/openapi.json", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
   res.sendFile(path.join(__dirname, "openapi.json"));
 });
 
-// ✅ テスト用エンドポイント
+// ✅ 実際の同期エンドポイント
 app.post("/chronicle/sync", async (req, res) => {
   try {
     const data = req.body;
@@ -47,5 +50,5 @@ app.post("/chronicle/sync", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Reflector Proxy running on port ${port}`);
+  console.log(`✅ Reflector Proxy running on port ${port}`);
 });
