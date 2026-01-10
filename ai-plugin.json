@@ -13,9 +13,17 @@
   },
   "api": {
     "type": "openapi",
-    "url": "https://reflector-proxy.onrender.com/openapi.json"
+    "url": "https://reflector-proxy.onrender.com/openapi.json",
+    "has_user_authentication": false
   },
   "contact_email": "support@reflector.app",
   "legal_info_url": "https://reflector.app/privacy",
-  "logo_url": "https://reflector.app/assets/logo.png"
+  "logo_url": "https://reflector.app/assets/logo.png",
+  "terms_of_service_url": "https://reflector.app/terms",
+  "servers": [
+    {
+      "url": "https://reflector-proxy.onrender.com",
+      "description": "Primary Reflector Proxy Server"
+    }
+  ]
 }
