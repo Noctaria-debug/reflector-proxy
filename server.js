@@ -1,19 +1,27 @@
-// ✅ テスト用API（ChatGPT経由で確認可能）
+// ✅ 先頭で node-fetch を追加
+import fetch from "node-fetch";
+
+// ✅ Reflector Proxy sync endpoint（完全版）
 app.post("/chronicle/sync", async (req, res) => {
   try {
     console.log("Incoming Reflector Sync:", req.body);
 
-    // 🔹 フィールドを限定せずに、受け取った全データを保持
+    // 🔹 受け取った全データを保持
     const payload = req.body || {};
 
-    // 🔹 既存互換用：古いキーも残す
+    // 🔹 既存互換フィールド（旧構造の維持）
     const { test, memory, reflection, emotion, data } = payload;
 
-    // 🔹 ここで Reflector API に転送（必要なら環境変数に URL を設定）
-    const apiUrl = process.env.API_URL || "https://reflector-api.onrender.com/chronicle/sync";
+    // 🔹 Reflector API 宛のURLと認証キー
+    const apiUrl =
+      process.env.API_URL ||
+      "https://reflector-api.onrender.com/chronicle/sync";
     const apiKey = process.env.REFLECTOR_API_KEY;
 
+    // 🔹 上流APIのレスポンス格納用
     let apiResponse = null;
+
+    // 🔹 Reflector API へ転送
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -21,14 +29,22 @@ app.post("/chronicle/sync", async (req, res) => {
           "Content-Type": "application/json",
           "X-Api-Key": apiKey || "",
         },
-        body: JSON.stringify(payload), // ← emotion・data含め全転送
+        body: JSON.stringify(payload), // emotion/data 含め全体を転送
       });
-      apiResponse = await response.json();
+
+      // 🔹 可能ならJSONとして受け取る
+      const text = await response.text();
+      try {
+        apiResponse = JSON.parse(text);
+      } catch {
+        apiResponse = { raw: text };
+      }
     } catch (err) {
       console.error("Upstream Reflector API Error:", err.message);
+      apiResponse = { error: err.message };
     }
 
-    // 🔹 Proxy自体のレスポンス（既存仕様維持 + emotion 対応）
+    // 🔹 Proxy 側のレスポンス（既存互換 + emotion対応）
     res.json({
       ok: true,
       message: "Data received successfully (via proxy)",
@@ -41,7 +57,7 @@ app.post("/chronicle/sync", async (req, res) => {
         emotion: emotion || null,
         data: data || null,
       },
-      response: apiResponse || { info: "No response from API" },
+      response: apiResponse,
     });
   } catch (err) {
     console.error("Error in /chronicle/sync:", err);
