@@ -8,7 +8,7 @@
   "servers": [
     {
       "url": "https://reflector-proxy.onrender.com",
-      "description": "Primary Reflector Proxy server"
+      "description": "Primary Reflector Proxy Server"
     }
   ],
   "paths": {
