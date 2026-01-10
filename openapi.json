@@ -1,0 +1,79 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Reflector Proxy API",
+    "version": "1.0.0",
+    "description": "Routes secure POST requests through the Reflector Proxy to the Reflector API for Chronicle synchronization and state reflection."
+  },
+  "servers": [
+    {
+      "url": "https://reflector-proxy.onrender.com"
+    }
+  ],
+  "paths": {
+    "/chronicle/sync": {
+      "post": {
+        "operationId": "syncChronicle",
+        "summary": "Sync Reflector Chronicle data",
+        "description": "Send memory updates or reflection payloads to the Reflector backend for synchronization via proxy.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "test": {
+                    "type": "string",
+                    "description": "Test or message payload for Reflector API."
+                  },
+                  "state": {
+                    "type": "object",
+                    "description": "Optional structured memory state for Reflector Chronicle."
+                  }
+                },
+                "example": {
+                  "test": "Hello Reflector!",
+                  "state": {
+                    "mood": "calm",
+                    "reflection": "ready for sync"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reflector API responded successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "from": { "type": "string" },
+                    "target": { "type": "string" },
+                    "response": { "type": "object" }
+                  }
+                },
+                "example": {
+                  "ok": true,
+                  "from": "proxy",
+                  "target": "https://reflector-api.onrender.com/chronicle/sync",
+                  "response": {
+                    "status": "success",
+                    "message": "Data received successfully"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    }
+  }
+}
