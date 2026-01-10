@@ -19,16 +19,5 @@
   "contact_email": "support@reflector.app",
   "legal_info_url": "https://reflector.app/privacy",
   "terms_of_service_url": "https://reflector.app/terms",
-  "logo_url": "https://reflector.app/assets/logo.png",
-  "servers": [
-    {
-      "url": "https://reflector-proxy.onrender.com",
-      "description": "Primary Reflector Proxy Server"
-    }
-  ],
-  "info": {
-    "title": "Reflector Sync Action",
-    "version": "1.0.0",
-    "description": "Action connector for Reflector Chronicle via secure proxy"
-  }
+  "logo_url": "https://reflector.app/assets/logo.png"
 }
