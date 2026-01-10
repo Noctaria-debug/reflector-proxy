@@ -1,46 +1,72 @@
 import express from "express";
 import cors from "cors";
 import fetch from "node-fetch";
+import fs from "fs";
+import path from "path";
 
 const app = express();
-app.use(cors());
+const PORT = process.env.PORT || 10000;
+const __dirname = path.resolve();
+
 app.use(express.json());
+app.use(cors());
 
-const REFLECTOR_API_URL = process.env.REFLECTOR_API_URL;
-const REFLECTOR_API_KEY = process.env.REFLECTOR_API_KEY;
-
+// ✅ root check
 app.get("/", (req, res) => {
-  res.json({ status: "ok", message: "Reflector Proxy running on Render", port: process.env.PORT || 10000 });
+  res.json({
+    status: "ok",
+    message: "Reflector Proxy running on Render",
+    port: PORT.toString(),
+  });
 });
 
-app.post("/chronicle/sync", async (req, res) => {
-  try {
-    const response = await fetch(REFLECTOR_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${REFLECTOR_API_KEY || ""}`
-      },
-      body: JSON.stringify(req.body)
-    });
-
-    // Python側がJSON以外を返すと落ちる → try-catchで吸収
-    const text = await response.text();
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      data = { raw: text };
-    }
-
-    res.json({ ok: true, from: "proxy", target: REFLECTOR_API_URL, response: data });
-  } catch (err) {
-    console.error("❌ Proxy error:", err);
-    res.status(500).json({ error: "Proxy request failed", detail: err.message });
+// ✅ serve ai-plugin.json
+app.get("/ai-plugin.json", (req, res) => {
+  const filePath = path.join(__dirname, "ai-plugin.json");
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).send({ error: "ai-plugin.json not found" });
   }
 });
 
-const PORT = process.env.PORT || 10000;
+// ✅ serve openapi.yaml (if available)
+app.get("/openapi.yaml", (req, res) => {
+  const filePath = path.join(__dirname, "openapi.yaml");
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).send({ error: "openapi.yaml not found" });
+  }
+});
+
+// ✅ proxy endpoint
+app.post("/chronicle/sync", async (req, res) => {
+  try {
+    const target = "https://reflector-api.onrender.com/chronicle/sync";
+    const response = await fetch(target, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req.body),
+    });
+
+    const data = await response.text();
+    res.json({
+      ok: true,
+      from: "proxy",
+      target,
+      response: {
+        raw: data,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Proxy request failed",
+      detail: error.message,
+    });
+  }
+});
+
 app.listen(PORT, () => {
-  console.log(`✅ Proxy running on port ${PORT}`);
+  console.log(`✅ Reflector Proxy running on Render (port: ${PORT})`);
 });
