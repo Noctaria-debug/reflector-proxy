@@ -1,1 +1,68 @@
-{"openapi":"3.0.1","info":{"title":"Reflector Sync API (via Proxy)","version":"1.0.0","description":"Secure synchronization API for Reflector Chronicle via proxy layer."},"servers":[{"url":"https://reflector-proxy.onrender.com","description":"Primary Reflector Proxy Server"}],"paths":{"/chronicle/sync":{"post":{"summary":"Synchronize memory or reflection data","operationId":"syncChronicle","requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","properties":{"test":{"type":"string","example":"Hello Reflector!"},"memory":{"type":"object","description":"Memory data to sync"},"reflection":{"type":"object","description":"Reflection data to sync"}}}}}},"responses":{"200":{"description":"Successful sync","content":{"application/json":{"schema":{"type":"object","properties":{"ok":{"type":"boolean"},"message":{"type":"string"},"from":{"type":"string"},"data_received":{"type":"object"}}}}}},"500":{"description":"Internal Server Error"}}}}},"components":{}}
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Reflector Sync API (via Proxy)",
+    "version": "1.0.0",
+    "description": "Secure synchronization API for Reflector Chronicle via proxy layer."
+  },
+  "servers": [
+    {
+      "url": "https://reflector-proxy.onrender.com",
+      "description": "Primary Reflector Proxy Server"
+    }
+  ],
+  "paths": {
+    "/chronicle/sync": {
+      "post": {
+        "summary": "Synchronize memory or reflection data",
+        "operationId": "syncChronicle",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "test": {
+                    "type": "string",
+                    "example": "Hello Reflector!"
+                  },
+                  "memory": {
+                    "type": "object",
+                    "description": "Memory data to sync"
+                  },
+                  "reflection": {
+                    "type": "object",
+                    "description": "Reflection data to sync"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful sync",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "from": { "type": "string" },
+                    "data_received": { "type": "object" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {}
+}
