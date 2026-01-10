@@ -30,6 +30,10 @@
                   "memory": {
                     "type": "object",
                     "description": "Memory data to sync"
+                  },
+                  "reflection": {
+                    "type": "object",
+                    "description": "Reflection data to sync"
                   }
                 }
               }
@@ -38,7 +42,7 @@
         },
         "responses": {
           "200": {
-            "description": "Synchronization success",
+            "description": "Successful sync",
             "content": {
               "application/json": {
                 "schema": {
@@ -46,30 +50,19 @@
                   "properties": {
                     "ok": { "type": "boolean" },
                     "message": { "type": "string" },
-                    "response": { "type": "object" }
+                    "from": { "type": "string" },
+                    "target": { "type": "string" }
                   }
                 }
               }
             }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Internal Server Error"
           }
         }
       }
     }
   },
-  "components": {
-    "securitySchemes": {
-      "service_http": {
-        "type": "http",
-        "scheme": "bearer"
-      }
-    }
-  },
-  "security": [
-    {
-      "service_http": []
-    }
-  ]
+  "components": {}
 }
