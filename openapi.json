@@ -51,7 +51,7 @@
                     "ok": { "type": "boolean" },
                     "message": { "type": "string" },
                     "from": { "type": "string" },
-                    "target": { "type": "string" }
+                    "data_received": { "type": "object" }
                   }
                 }
               }
