@@ -1,71 +1,51 @@
 import express from "express";
-import fetch from "node-fetch";
 import cors from "cors";
-import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
-app.use(express.json());
+const port = process.env.PORT || 10000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.use(cors());
+app.use(express.json());
 
-// ✅ openapi.json を返すルートを追加
-app.get("/openapi.json", (req, res) => {
-  try {
-    const data = fs.readFileSync("./openapi.json", "utf8");
-    res.setHeader("Content-Type", "application/json");
-    res.send(data);
-  } catch (err) {
-    console.error("Failed to load openapi.json:", err);
-    res.status(500).json({ error: "Failed to load openapi.json" });
-  }
-});
-
-// ✅ ai-plugin.json も同様に（既にある場合はOK）
-app.get("/ai-plugin.json", (req, res) => {
-  try {
-    const data = fs.readFileSync("./ai-plugin.json", "utf8");
-    res.setHeader("Content-Type", "application/json");
-    res.send(data);
-  } catch (err) {
-    console.error("Failed to load ai-plugin.json:", err);
-    res.status(500).json({ error: "Failed to load ai-plugin.json" });
-  }
-});
-
-// ✅ テスト用エンドポイント
+// ✅ ステータス確認用（ルート）
 app.get("/", (req, res) => {
   res.json({
     status: "ok",
     message: "Reflector Proxy running on Render",
-    port: process.env.PORT || "10000",
+    port: port.toString(),
   });
 });
 
-// ✅ 実際のプロキシルート
+// ✅ OpenAI用スキーマファイル
+app.get("/ai-plugin.json", (req, res) => {
+  res.sendFile(path.join(__dirname, "ai-plugin.json"));
+});
+
+app.get("/openapi.json", (req, res) => {
+  res.sendFile(path.join(__dirname, "openapi.json"));
+});
+
+// ✅ テスト用エンドポイント
 app.post("/chronicle/sync", async (req, res) => {
   try {
-    const response = await fetch("https://reflector-api.onrender.com/chronicle/sync", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(req.body),
-    });
-    const result = await response.text();
+    const data = req.body;
     res.json({
       ok: true,
       from: "proxy",
-      target: "https://reflector-api.onrender.com/chronicle/sync",
-      response: { raw: result },
+      message: "Data received successfully",
+      data_received: data,
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      error: "Proxy request failed",
-      detail: error.message,
-    });
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-// ✅ PORT設定
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
-  console.log(`Reflector Proxy running on Render port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Reflector Proxy running on port ${port}`);
 });
