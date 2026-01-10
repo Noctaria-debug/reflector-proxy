@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -12,7 +13,7 @@ const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.json());
 
-// ✅ ルートステータス
+// ✅ Render動作確認
 app.get("/", (req, res) => {
   res.json({
     status: "ok",
@@ -21,30 +22,33 @@ app.get("/", (req, res) => {
   });
 });
 
-// ✅ ai-plugin.json を正しい Content-Type で返す
+// ✅ JSONファイル送信用（BOM除去・Content-Type強制）
+function sendJson(res, filePath) {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const data = fs.readFileSync(filePath, "utf8").replace(/^\uFEFF/, ""); // BOM除去
+  res.send(data);
+}
+
+// ✅ ai-plugin.json
 app.get("/ai-plugin.json", (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-  res.sendFile(path.join(__dirname, "ai-plugin.json"));
+  sendJson(res, path.join(__dirname, "ai-plugin.json"));
 });
 
-// ✅ openapi.json を正しい Content-Type で返す
+// ✅ openapi.json
 app.get("/openapi.json", (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-  res.sendFile(path.join(__dirname, "openapi.json"));
+  sendJson(res, path.join(__dirname, "openapi.json"));
 });
 
-// ✅ 実際の同期エンドポイント
-app.post("/chronicle/sync", async (req, res) => {
+// ✅ 実際のAPIエンドポイント
+app.post("/chronicle/sync", (req, res) => {
   try {
-    const data = req.body;
     res.json({
       ok: true,
-      from: "proxy",
       message: "Data received successfully",
-      data_received: data,
+      from: "proxy",
+      data_received: req.body,
     });
   } catch (err) {
-    console.error("Error:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
