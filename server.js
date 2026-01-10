@@ -1,38 +1,87 @@
-// ✅ 先頭で node-fetch を追加
-import fetch from "node-fetch";
+// =============================================================
+// Reflector Proxy Server - Unified Safe Version (2026 Edition)
+// Compatible with: Render Node v22.x, Second Chronicle, Reflector API
+// =============================================================
 
-// ✅ Reflector Proxy sync endpoint（完全版）
+import express from "express";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
+
+// =============================================================
+// 🧠 Core Initialization
+// =============================================================
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// --- 現在のファイルパスから __dirname を再現 ---
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+console.log("🪞 Reflector Proxy server starting...");
+
+// =============================================================
+// 🔹 ai-plugin.json の配信
+// =============================================================
+app.get("/ai-plugin.json", (req, res) => {
+  const filePath = path.join(__dirname, "ai-plugin.json");
+  if (fs.existsSync(filePath)) {
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    const json = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    res.json(json);
+  } else {
+    res.status(404).json({ error: "ai-plugin.json not found" });
+  }
+});
+
+// =============================================================
+// 🔹 openapi.json の配信
+// =============================================================
+app.get("/openapi.json", (req, res) => {
+  const filePath = path.join(__dirname, "openapi.json");
+  if (fs.existsSync(filePath)) {
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    const json = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    res.json(json);
+  } else {
+    res.status(404).json({ error: "openapi.json not found" });
+  }
+});
+
+// =============================================================
+// 🔄 /chronicle/sync - Reflector Proxy Bridge
+// =============================================================
 app.post("/chronicle/sync", async (req, res) => {
   try {
     console.log("Incoming Reflector Sync:", req.body);
 
-    // 🔹 受け取った全データを保持
+    // 🔹 フルペイロード保持
     const payload = req.body || {};
-
-    // 🔹 既存互換フィールド（旧構造の維持）
     const { test, memory, reflection, emotion, data } = payload;
 
-    // 🔹 Reflector API 宛のURLと認証キー
+    // Reflector API エンドポイント
     const apiUrl =
       process.env.API_URL ||
       "https://reflector-api.onrender.com/chronicle/sync";
     const apiKey = process.env.REFLECTOR_API_KEY;
 
-    // 🔹 上流APIのレスポンス格納用
     let apiResponse = null;
 
-    // 🔹 Reflector API へ転送
+    // 🔹 Reflector API に転送
     try {
+      const { default: fetch } = await import("node-fetch");
+
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "X-Api-Key": apiKey || "",
         },
-        body: JSON.stringify(payload), // emotion/data 含め全体を転送
+        body: JSON.stringify(payload),
       });
 
-      // 🔹 可能ならJSONとして受け取る
       const text = await response.text();
       try {
         apiResponse = JSON.parse(text);
@@ -44,7 +93,7 @@ app.post("/chronicle/sync", async (req, res) => {
       apiResponse = { error: err.message };
     }
 
-    // 🔹 Proxy 側のレスポンス（既存互換 + emotion対応）
+    // 🔹 Proxy 側の最終レスポンス
     res.json({
       ok: true,
       message: "Data received successfully (via proxy)",
@@ -67,4 +116,21 @@ app.post("/chronicle/sync", async (req, res) => {
       error: err.message,
     });
   }
+});
+
+// =============================================================
+// ✅ Health Check (Root Endpoint)
+// =============================================================
+app.get("/", (req, res) => {
+  res.send(
+    "Reflector Proxy API is running. Try /ai-plugin.json or /openapi.json"
+  );
+});
+
+// =============================================================
+// 🚀 Render Port Binding
+// =============================================================
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Reflector Proxy running on port ${PORT}`);
 });
