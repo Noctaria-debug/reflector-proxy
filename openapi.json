@@ -1,9 +1,9 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.1.0",
   "info": {
     "title": "Reflector Sync API (via Proxy)",
-    "version": "1.0.0",
-    "description": "Secure synchronization API for Reflector Chronicle via proxy layer."
+    "version": "1.0.1",
+    "description": "Secure synchronization API for Reflector Chronicle via proxy layer (OpenAPI 3.1.0 compatible)."
   },
   "servers": [
     {
@@ -35,7 +35,8 @@
                     "type": "object",
                     "description": "Reflection data to sync"
                   }
-                }
+                },
+                "required": ["test"]
               }
             }
           }
@@ -64,5 +65,7 @@
       }
     }
   },
-  "components": {}
+  "components": {
+    "schemas": {}
+  }
 }
