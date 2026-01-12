@@ -1,6 +1,7 @@
 // =============================================================
-// Reflector Proxy Server - Verified Final Version (2026)
-// ✅ Compatible with: Render Node v22.x, Google OAuth, Second Chronicle, Reflector API
+// Reflector Proxy Server - Final Verified Edition (2026)
+// ✅ Google OAuth Branding Compliant
+// ✅ Compatible with: Render Node v22.x, Second Chronicle, Reflector API
 // =============================================================
 
 import express from "express";
@@ -22,7 +23,7 @@ const __dirname = path.dirname(__filename);
 console.log("🪞 Reflector Proxy server starting...");
 
 // =============================================================
-// 🔹 Static Pages & Verification Files (No public folder)
+// 🔹 Static Pages & Verification Files
 // =============================================================
 
 // Google 所有確認ファイル
@@ -48,6 +49,8 @@ app.get("/privacy.html", (req, res) => {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Privacy Policy - Reflector Chronicle Bridge</title>
+        <meta name="description" content="Privacy policy for Reflector Chronicle Bridge." />
+        <link rel="canonical" href="https://reflector-proxy.onrender.com/privacy.html" />
       </head>
       <body>
         <h1>Privacy Policy</h1>
@@ -74,6 +77,8 @@ app.get("/terms.html", (req, res) => {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Terms of Service - Reflector Chronicle Bridge</title>
+        <meta name="description" content="Terms of Service for Reflector Chronicle Bridge." />
+        <link rel="canonical" href="https://reflector-proxy.onrender.com/terms.html" />
       </head>
       <body>
         <h1>Terms of Service</h1>
@@ -169,7 +174,7 @@ app.post("/chronicle/sync", async (req, res) => {
 });
 
 // =============================================================
-// ✅ Health Check (Root Endpoint)
+// ✅ Health Check (Root Endpoint) - Google Verification Compliant
 // =============================================================
 app.get("/", (req, res) => {
   res.send(`
@@ -179,15 +184,17 @@ app.get("/", (req, res) => {
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Reflector Chronicle Bridge</title>
+      <meta name="description" content="Reflector Chronicle Bridge connects Second Chronicle memory synchronization and reflection data securely." />
+      <link rel="canonical" href="https://reflector-proxy.onrender.com/" />
     </head>
     <body>
       <h1>Reflector Chronicle Bridge</h1>
       <p>The Reflector Proxy API is active and functioning.</p>
       <p>This service connects Second Chronicle memory synchronization and reflection data.</p>
-      <ul>
-        <li><a href="https://reflector-proxy.onrender.com/privacy.html">Privacy Policy</a></li>
-        <li><a href="https://reflector-proxy.onrender.com/terms.html">Terms of Service</a></li>
-      </ul>
+      <p>
+        <a href="https://reflector-proxy.onrender.com/privacy.html">Privacy Policy</a> |
+        <a href="https://reflector-proxy.onrender.com/terms.html">Terms of Service</a>
+      </p>
     </body>
     </html>
   `);
