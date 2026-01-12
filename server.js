@@ -1,5 +1,5 @@
 // =============================================================
-// Reflector Proxy Server - Full Verified Version (Final, 2026 Edition)
+// Reflector Proxy Server - Verified Final Version (2026)
 // ✅ Compatible with: Render Node v22.x, Google OAuth, Second Chronicle, Reflector API
 // =============================================================
 
@@ -42,11 +42,21 @@ app.get("/privacy.html", (req, res) => {
     res.sendFile(filePath);
   } else {
     res.send(`
-      <h1>Privacy Policy - Reflector Chronicle Bridge</h1>
-      <p>Reflector Chronicle Bridge does not collect personal data beyond what is required for synchronizing Chronicle memory and reflection data between trusted systems.</p>
-      <p>All data transferred through this service remains encrypted in transit and is not shared with third parties.</p>
-      <p>For any concerns, contact: support@reflector-proxy.onrender.com</p>
-      <p>Last updated: January 2026</p>
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Privacy Policy - Reflector Chronicle Bridge</title>
+      </head>
+      <body>
+        <h1>Privacy Policy</h1>
+        <p>Reflector Chronicle Bridge does not collect personal data beyond what is required for synchronizing Chronicle memory and reflection data between trusted systems.</p>
+        <p>All data transferred through this service remains encrypted in transit and is not shared with third parties.</p>
+        <p>For any concerns, contact: support@reflector-proxy.onrender.com</p>
+        <p>Last updated: January 2026</p>
+      </body>
+      </html>
     `);
   }
 });
@@ -58,11 +68,21 @@ app.get("/terms.html", (req, res) => {
     res.sendFile(filePath);
   } else {
     res.send(`
-      <h1>Terms of Service - Reflector Chronicle Bridge</h1>
-      <p>By using Reflector Chronicle Bridge, you agree to allow limited data synchronization between authorized Chronicle systems and your connected services.</p>
-      <p>This service is provided as-is, without any guarantee or warranty. Users are responsible for maintaining the security of their connected accounts.</p>
-      <p>For any inquiries, contact: support@reflector-proxy.onrender.com</p>
-      <p>Last updated: January 2026</p>
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Terms of Service - Reflector Chronicle Bridge</title>
+      </head>
+      <body>
+        <h1>Terms of Service</h1>
+        <p>By using Reflector Chronicle Bridge, you agree to allow limited data synchronization between authorized Chronicle systems and your connected services.</p>
+        <p>This service is provided as-is, without any guarantee or warranty. Users are responsible for maintaining the security of their connected accounts.</p>
+        <p>For any inquiries, contact: support@reflector-proxy.onrender.com</p>
+        <p>Last updated: January 2026</p>
+      </body>
+      </html>
     `);
   }
 });
@@ -153,13 +173,23 @@ app.post("/chronicle/sync", async (req, res) => {
 // =============================================================
 app.get("/", (req, res) => {
   res.send(`
-    <h1>Reflector Chronicle Bridge</h1>
-    <p>The Reflector Proxy API is active and functioning.</p>
-    <p>This service connects Second Chronicle memory synchronization and reflection data.</p>
-    <ul>
-      <li><a href="https://reflector-proxy.onrender.com/privacy.html">Privacy Policy</a></li>
-      <li><a href="https://reflector-proxy.onrender.com/terms.html">Terms of Service</a></li>
-    </ul>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Reflector Chronicle Bridge</title>
+    </head>
+    <body>
+      <h1>Reflector Chronicle Bridge</h1>
+      <p>The Reflector Proxy API is active and functioning.</p>
+      <p>This service connects Second Chronicle memory synchronization and reflection data.</p>
+      <ul>
+        <li><a href="https://reflector-proxy.onrender.com/privacy.html">Privacy Policy</a></li>
+        <li><a href="https://reflector-proxy.onrender.com/terms.html">Terms of Service</a></li>
+      </ul>
+    </body>
+    </html>
   `);
 });
 
