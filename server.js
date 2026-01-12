@@ -1,6 +1,6 @@
 // =============================================================
-// Reflector Proxy Server - Google OAuth Verified Compliance Edition (2026)
-// ✅ 100% Google OAuth Verification Ready
+// Reflector Proxy Server - Google Verified Final Integration (2026)
+// ✅ Full compliance with Google OAuth Verification, Limited Use Policy
 // =============================================================
 
 import express from "express";
@@ -16,6 +16,8 @@ app.use(express.json());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+console.log("🪞 Reflector Proxy server starting...");
+
 // =============================================================
 // 🔹 Google Verification File
 // =============================================================
@@ -26,7 +28,7 @@ app.get("/google7bda259bbc2508a5.html", (req, res) => {
 });
 
 // =============================================================
-// 🔹 Privacy Policy - Google Limited Use Policy 準拠版
+// 🔹 Privacy Policy (Google Limited Use Policy 準拠)
 // =============================================================
 app.get("/privacy.html", (req, res) => {
   res.send(`
@@ -36,59 +38,63 @@ app.get("/privacy.html", (req, res) => {
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Privacy Policy - Reflector Chronicle Bridge</title>
-      <meta name="description" content="Privacy policy for Reflector Chronicle Bridge, compliant with Google Limited Use Policy." />
+      <meta name="description" content="Privacy policy for Reflector Chronicle Bridge, compliant with Google API Services User Data Policy (Limited Use)." />
       <link rel="canonical" href="https://reflector-proxy.onrender.com/privacy.html" />
     </head>
     <body style="font-family: sans-serif; max-width: 800px; margin: auto; line-height: 1.6;">
       <h1>Privacy Policy</h1>
-
       <p><strong>Last updated:</strong> January 2026</p>
 
       <h2>1. Overview</h2>
       <p>
-        Reflector Chronicle Bridge connects your Chronicle memory data with authorized Google services (such as Google Drive) 
-        to enable seamless reflection and synchronization between trusted systems.
+        Reflector Chronicle Bridge provides a secure bridge between Chronicle memory systems and Google Drive for reflection synchronization.
+        The service accesses limited user data from Google APIs solely to enable this synchronization.
       </p>
 
       <h2>2. Data We Access</h2>
       <ul>
-        <li>Google Drive metadata (file names, modification dates, and IDs)</li>
-        <li>Specific Chronicle reflection files when explicitly authorized by the user</li>
+        <li>Google Drive metadata (file names, modification timestamps, file IDs)</li>
+        <li>Specific Chronicle reflection files explicitly authorized by the user</li>
       </ul>
       <p>
-        We <strong>do not</strong> collect or process any personal Google account information beyond what is explicitly permitted 
-        by the user during authorization.
+        No other personal Google data (such as emails, contacts, or account details) is accessed or stored.
       </p>
 
       <h2>3. Purpose of Data Use</h2>
       <p>
-        Data is accessed solely for synchronizing Chronicle memory, reflections, and contextual insights between authorized systems.  
-        This allows users to maintain consistency between Reflector Chronicle and connected cloud storage.
+        Data obtained through Google APIs is used exclusively to synchronize and maintain consistency of Chronicle reflection data.
+        It is never used for advertising, profiling, or data analysis beyond this scope.
       </p>
 
-      <h2>4. Data Sharing</h2>
+      <h2>4. Compliance with Google Policies</h2>
       <p>
-        Reflector Chronicle Bridge strictly adheres to Google’s 
-        <a href="https://developers.google.com/terms/api-services-user-data-policy#limited-use" target="_blank">
-        Limited Use Policy</a>.
-        <br>We do not share or sell user data to third parties.  
-        Data transmitted between services is encrypted (HTTPS/TLS) and processed only transiently during synchronization.
+        <strong>Reflector Chronicle Bridge’s use and transfer to any other app of information received from Google APIs will adhere to the 
+        <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank">
+        Google API Services User Data Policy</a>, including the Limited Use requirements.</strong>
+      </p>
+      <p>
+        The service processes all Google user data in memory and does not permanently store it on our servers.
       </p>
 
-      <h2>5. Data Retention and Deletion</h2>
+      <h2>5. Data Sharing</h2>
       <p>
-        No long-term storage of Google user data occurs on this proxy.  
-        Users may revoke Reflector Chronicle Bridge access at any time by visiting their 
-        <a href="https://myaccount.google.com/permissions" target="_blank">Google Account Permissions</a> page.
-      </p>
-      <p>
-        If users wish to remove all local records of synchronization, they may contact  
-        <a href="mailto:support@reflector-proxy.onrender.com">support@reflector-proxy.onrender.com</a>.
+        We do not share, sell, or distribute user data to third parties.
+        All data transfers between Reflector Chronicle Bridge and Google APIs are encrypted via HTTPS/TLS.
       </p>
 
-      <h2>6. Contact</h2>
+      <h2>6. Data Retention and Deletion</h2>
       <p>
-        For privacy inquiries, please contact:  
+        The service does not retain Google user data after synchronization completes.
+        Users can revoke access and delete all associated data by removing Reflector Chronicle Bridge from their
+        <a href="https://myaccount.google.com/permissions" target="_blank">Google Account Permissions</a>.
+      </p>
+      <p>
+        Upon revocation, all temporary session data used for synchronization is permanently deleted from the proxy server.
+      </p>
+
+      <h2>7. Contact</h2>
+      <p>
+        For data removal requests or privacy inquiries, please contact:  
         <a href="mailto:support@reflector-proxy.onrender.com">support@reflector-proxy.onrender.com</a>
       </p>
 
@@ -99,7 +105,7 @@ app.get("/privacy.html", (req, res) => {
 });
 
 // =============================================================
-// 🔹 Terms of Service - 形式的な同意条件
+// 🔹 Terms of Service
 // =============================================================
 app.get("/terms.html", (req, res) => {
   res.send(`
@@ -137,7 +143,7 @@ app.get("/terms.html", (req, res) => {
 });
 
 // =============================================================
-// 🔹 Root Page (with direct visible links)
+// 🔹 Root Page (リンク・説明明記済み)
 // =============================================================
 app.get("/", (req, res) => {
   res.send(`
@@ -147,13 +153,13 @@ app.get("/", (req, res) => {
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Reflector Chronicle Bridge</title>
-      <meta name="description" content="Reflector Chronicle Bridge connects Chronicle memory and reflection data securely using Google Drive APIs." />
+      <meta name="description" content="Reflector Chronicle Bridge connects Chronicle reflection data with Google Drive securely." />
       <link rel="canonical" href="https://reflector-proxy.onrender.com/" />
     </head>
     <body style="font-family: sans-serif; max-width: 800px; margin: auto; line-height: 1.6;">
       <h1>Reflector Chronicle Bridge</h1>
       <p>The Reflector Proxy API is active and functioning.</p>
-      <p>This service connects Second Chronicle memory synchronization and reflection data with Google Drive for secure reflection handling.</p>
+      <p>This service connects Second Chronicle reflection and memory data with Google Drive APIs for secure synchronization.</p>
 
       <h2>Documentation</h2>
       <ul>
@@ -171,7 +177,7 @@ app.get("/", (req, res) => {
 });
 
 // =============================================================
-// 🔹 ai-plugin.json / openapi.json 配信
+// 🔹 JSON files
 // =============================================================
 const serveJson = (filename, route) => {
   app.get(route, (req, res) => {
@@ -189,7 +195,7 @@ serveJson("ai-plugin.json", "/ai-plugin.json");
 serveJson("openapi.json", "/openapi.json");
 
 // =============================================================
-// 🔹 Reflector API Bridge
+// 🔹 Chronicle Sync API
 // =============================================================
 app.post("/chronicle/sync", async (req, res) => {
   try {
