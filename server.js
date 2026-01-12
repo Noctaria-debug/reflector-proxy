@@ -1,5 +1,5 @@
 // =============================================================
-// Reflector Proxy Server - Unified Safe Version (with Google Verification)
+// Reflector Proxy Server - Unified Safe Version (no public folder)
 // Compatible with: Render Node v22.x, Second Chronicle, Reflector API
 // =============================================================
 
@@ -23,18 +23,12 @@ const __dirname = path.dirname(__filename);
 console.log("🪞 Reflector Proxy server starting...");
 
 // =============================================================
-// 🔹 Static Pages & Verification Files
+// 🔹 Static Pages & Verification Files (No public folder)
 // =============================================================
-// public ディレクトリ（存在しない場合でも安全に処理）
-const publicDir = path.join(__dirname, "public");
-if (!fs.existsSync(publicDir)) {
-  fs.mkdirSync(publicDir);
-  console.log("📁 public/ フォルダを自動作成しました");
-}
 
 // Google 所有確認ファイル
 app.get("/google7bda259bbc2508a5.html", (req, res) => {
-  const filePath = path.join(publicDir, "google7bda259bbc2508a5.html");
+  const filePath = path.join(__dirname, "google7bda259bbc2508a5.html");
   if (fs.existsSync(filePath)) {
     res.sendFile(filePath);
   } else {
@@ -44,7 +38,7 @@ app.get("/google7bda259bbc2508a5.html", (req, res) => {
 
 // Privacy Policy
 app.get("/privacy.html", (req, res) => {
-  const filePath = path.join(publicDir, "privacy.html");
+  const filePath = path.join(__dirname, "privacy.html");
   if (fs.existsSync(filePath)) {
     res.sendFile(filePath);
   } else {
@@ -54,7 +48,7 @@ app.get("/privacy.html", (req, res) => {
 
 // Terms of Service
 app.get("/terms.html", (req, res) => {
-  const filePath = path.join(publicDir, "terms.html");
+  const filePath = path.join(__dirname, "terms.html");
   if (fs.existsSync(filePath)) {
     res.sendFile(filePath);
   } else {
