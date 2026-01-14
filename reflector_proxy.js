@@ -1,6 +1,7 @@
 // =============================================================
 // Reflector Proxy Server - Full Integrated OAuth Edition (2026)
 // ✅ Google OAuth + Reflector API + Drive Sync ready
+// ✅ Read-only memory protection integrated
 // =============================================================
 
 import express from "express";
@@ -22,12 +23,14 @@ app.use(express.json());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-console.log("🪞 Reflector Proxy (Full OAuth Edition) starting...");
+console.log("🪞 Reflector Proxy (Full OAuth + Read-Only Guard) starting...");
 
 // =============================================================
 // 🔐 Environment Variables
 // =============================================================
-const REFLECTOR_API_URL = process.env.REFLECTOR_API_URL || "https://reflector-api.onrender.com/chronicle/sync";
+const REFLECTOR_API_URL =
+  process.env.REFLECTOR_API_URL ||
+  "https://reflector-api.onrender.com/chronicle/sync";
 const REFLECTOR_API_KEY = process.env.REFLECTOR_API_KEY;
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
@@ -40,13 +43,13 @@ const TOKEN_PATH = path.join(__dirname, "token.json");
 app.get("/auth/google", (req, res) => {
   const scope = encodeURIComponent([
     "https://www.googleapis.com/auth/drive.file",
-    "https://www.googleapis.com/auth/drive.metadata.readonly"
+    "https://www.googleapis.com/auth/drive.metadata.readonly",
   ].join(" "));
-  
+
   const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(
     REDIRECT_URI
   )}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
-  
+
   console.log("🔗 Redirecting to Google OAuth...");
   res.redirect(url);
 });
@@ -88,13 +91,30 @@ app.get("/oauth2callback", async (req, res) => {
 });
 
 // =============================================================
-// 🔄 /chronicle/sync - Proxy Bridge
+// 🔄 /chronicle/sync - Proxy Bridge (read-only protection)
 // =============================================================
 app.post("/chronicle/sync", async (req, res) => {
   try {
     const payload = req.body || {};
     console.log("📤 Incoming sync payload:", payload);
 
+    // 🧩 Read-only guard:
+    // Avoid overwriting memory if the payload indicates a read operation or is nearly empty.
+    const isReadOnly =
+      payload.test === "read-memory" ||
+      payload.mode === "read-only" ||
+      Object.keys(payload).length <= 2;
+
+    if (isReadOnly) {
+      console.log("🛡️ Read-only request detected. Skipping write to Reflector API.");
+      return res.json({
+        ok: true,
+        message: "Read-only mode: existing memory preserved.",
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // 🔁 Forward write/update request to Reflector API
     const response = await fetch(REFLECTOR_API_URL, {
       method: "POST",
       headers: {
@@ -143,5 +163,5 @@ app.get("/", (req, res) => {
 // =============================================================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Reflector Proxy (OAuth Edition) running on port ${PORT}`);
+  console.log(`✅ Reflector Proxy (OAuth + Read-Only Guard) running on port ${PORT}`);
 });
