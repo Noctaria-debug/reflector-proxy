@@ -4,5 +4,5 @@ services:
     env: node
     plan: free
     buildCommand: "npm install"
-    startCommand: "node server.js"
+    startCommand: "node reflector_proxy.js"
     autoDeploy: true
