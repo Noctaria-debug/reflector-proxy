@@ -2,14 +2,17 @@
   "name": "reflector-proxy",
   "version": "1.0.0",
   "description": "Proxy service for Reflector API on Render",
-  "main": "server.js",
+  "main": "reflector_proxy.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node reflector_proxy.js"
   },
   "dependencies": {
     "express": "^4.19.2",
     "cors": "^2.8.5",
     "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
