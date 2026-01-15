@@ -3,7 +3,7 @@
   "name_for_human": "Reflector Sync",
   "name_for_model": "reflector_sync",
   "description_for_human": "Sync and update your Reflector Chronicle securely through Reflector's proxy.",
-  "description_for_model": "Send and synchronize memory or reflection data securely via the Reflector proxy API.",
+  "description_for_model": "Send and synchronize memory, reflection, and emotion data securely via the Reflector proxy API.",
   "auth": {
     "type": "service_http",
     "authorization_type": "bearer",
