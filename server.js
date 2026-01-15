@@ -1,7 +1,8 @@
 // =============================================================
 // Reflector Proxy Server - Full Integrated OAuth Edition (2026)
 // ✅ Google OAuth + Reflector API + Drive Sync ready
-// ✅ Read-only memory protection integrated (including /chronicle/load)
+// ✅ Read-only memory protection integrated
+// ✅ /chronicle/load endpoint supported
 // =============================================================
 
 import express from "express";
@@ -12,6 +13,7 @@ import { fileURLToPath } from "url";
 import fs from "fs";
 import dotenv from "dotenv";
 
+// Load environment variables from .env if present
 dotenv.config();
 
 // =============================================================
@@ -28,10 +30,10 @@ console.log("🪞 Reflector Proxy (Full OAuth + Read-Only Guard) starting...");
 // =============================================================
 // 🔐 Environment Variables
 // =============================================================
-const REFLECTOR_API_SYNC_URL =
-  process.env.REFLECTOR_API_SYNC_URL ||
+const REFLECTOR_API_SYNC =
+  process.env.REFLECTOR_API_URL ||
   "https://reflector-api.onrender.com/chronicle/sync";
-const REFLECTOR_API_LOAD_URL =
+const REFLECTOR_API_LOAD =
   process.env.REFLECTOR_API_LOAD_URL ||
   "https://reflector-api.onrender.com/chronicle/load";
 const REFLECTOR_API_KEY = process.env.REFLECTOR_API_KEY;
@@ -94,37 +96,7 @@ app.get("/oauth2callback", async (req, res) => {
 });
 
 // =============================================================
-// 🔄 /chronicle/load - Read-only Proxy Bridge
-// =============================================================
-app.post("/chronicle/load", async (req, res) => {
-  try {
-    const payload = req.body || {};
-    console.log("📥 Incoming load request:", payload);
-
-    // 読み込みリクエストはDrive書き込みを行わないため、Reflector API の /chronicle/load にそのまま転送
-    const response = await fetch(REFLECTOR_API_LOAD_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Api-Key": REFLECTOR_API_KEY || "",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await response.json();
-    res.json({
-      ok: true,
-      message: "Data loaded via Reflector API successfully.",
-      backend_response: data,
-    });
-  } catch (err) {
-    console.error("Reflector load error:", err);
-    res.status(500).json({ ok: false, error: err.message });
-  }
-});
-
-// =============================================================
-// 🔄 /chronicle/sync - Proxy Bridge (write/update with read-only guard)
+// 🔄 /chronicle/sync - Proxy Bridge (read-only protection)
 // =============================================================
 app.post("/chronicle/sync", async (req, res) => {
   try {
@@ -148,7 +120,7 @@ app.post("/chronicle/sync", async (req, res) => {
     }
 
     // 🔁 Forward write/update request to Reflector API
-    const response = await fetch(REFLECTOR_API_SYNC_URL, {
+    const response = await fetch(REFLECTOR_API_SYNC, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -165,6 +137,38 @@ app.post("/chronicle/sync", async (req, res) => {
     });
   } catch (err) {
     console.error("Reflector sync error:", err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// =============================================================
+// 📥 /chronicle/load - Proxy Bridge (read-only, no overwrite)
+// =============================================================
+app.post("/chronicle/load", async (req, res) => {
+  try {
+    const payload = req.body || {};
+    console.log("📤 Incoming load payload:", payload);
+
+    // Always treat load as read-only: do not write to Reflector API.
+    const response = await fetch(REFLECTOR_API_LOAD, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Api-Key": REFLECTOR_API_KEY || "",
+      },
+      body: JSON.stringify({
+        file_name: payload.file_name || "second_memory.json",
+      }),
+    });
+
+    const data = await response.json();
+    res.json({
+      ok: true,
+      message: "Data retrieved from Reflector API successfully.",
+      backend_response: data,
+    });
+  } catch (err) {
+    console.error("Reflector load error:", err);
     res.status(500).json({ ok: false, error: err.message });
   }
 });
