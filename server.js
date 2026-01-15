@@ -1,8 +1,6 @@
 // =============================================================
-// Reflector Proxy Server - Full Integrated OAuth Edition (2026)
-// ✅ Google OAuth + Reflector API + Drive Sync ready
-// ✅ Read-only memory protection integrated
-// ✅ /chronicle/load endpoint supported
+// Reflector Proxy Server - Unified Sync + Load Edition (2026)
+// 🌐 Handles Google OAuth, read-only guard, and forwarding to Reflector API
 // =============================================================
 
 import express from "express";
@@ -11,29 +9,23 @@ import fetch from "node-fetch";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-import dotenv from "dotenv";
 
-// Load environment variables from .env if present
-dotenv.config();
+// NOTE: .env is not imported here because render provides env vars directly
 
-// =============================================================
-// 🧠 Core Initialization
-// =============================================================
 const app = express();
 app.use(cors());
 app.use(express.json());
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-console.log("🪞 Reflector Proxy (Full OAuth + Read-Only Guard) starting...");
+console.log("🪞 Reflector Proxy (Unified Sync + Load) starting...");
 
-// =============================================================
-// 🔐 Environment Variables
-// =============================================================
-const REFLECTOR_API_SYNC =
-  process.env.REFLECTOR_API_URL ||
+// Environment variables
+const REFLECTOR_API_SYNC_URL =
+  process.env.REFLECTOR_API_SYNC_URL ||
   "https://reflector-api.onrender.com/chronicle/sync";
-const REFLECTOR_API_LOAD =
+const REFLECTOR_API_LOAD_URL =
   process.env.REFLECTOR_API_LOAD_URL ||
   "https://reflector-api.onrender.com/chronicle/load";
 const REFLECTOR_API_KEY = process.env.REFLECTOR_API_KEY;
@@ -42,30 +34,21 @@ const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const REDIRECT_URI = "https://reflector-proxy.onrender.com/oauth2callback";
 const TOKEN_PATH = path.join(__dirname, "token.json");
 
-// =============================================================
-// 🔹 OAuth 2.0 Google Login
-// =============================================================
+// OAuth flow
 app.get("/auth/google", (req, res) => {
   const scope = encodeURIComponent([
     "https://www.googleapis.com/auth/drive.file",
-    "https://www.googleapis.com/auth/drive.metadata.readonly",
+    "https://www.googleapis.com/auth/drive.metadata.readonly"
   ].join(" "));
-
   const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(
     REDIRECT_URI
   )}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
-
-  console.log("🔗 Redirecting to Google OAuth...");
   res.redirect(url);
 });
 
-// =============================================================
-// 🔁 OAuth2 Callback
-// =============================================================
 app.get("/oauth2callback", async (req, res) => {
   const code = req.query.code;
   if (!code) return res.status(400).send("Missing authorization code");
-
   try {
     const response = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
@@ -75,16 +58,12 @@ app.get("/oauth2callback", async (req, res) => {
         client_id: CLIENT_ID,
         client_secret: CLIENT_SECRET,
         redirect_uri: REDIRECT_URI,
-        grant_type: "authorization_code",
-      }),
+        grant_type: "authorization_code"
+      })
     });
-
     const tokens = await response.json();
     if (tokens.error) throw new Error(tokens.error_description || tokens.error);
-
     fs.writeFileSync(TOKEN_PATH, JSON.stringify(tokens, null, 2));
-    console.log("✅ OAuth tokens saved:", TOKEN_PATH);
-
     res.send(`
       <h2>✅ Reflector Chronicle Bridge is now authorized with Google Drive!</h2>
       <p>You can close this window and return to the app.</p>
@@ -95,87 +74,77 @@ app.get("/oauth2callback", async (req, res) => {
   }
 });
 
-// =============================================================
-// 🔄 /chronicle/sync - Proxy Bridge (read-only protection)
-// =============================================================
+// ===================== Sync Endpoint (Proxy) =====================
 app.post("/chronicle/sync", async (req, res) => {
   try {
     const payload = req.body || {};
-    console.log("📤 Incoming sync payload:", payload);
+    console.log("📤 Incoming /chronicle/sync payload:", payload);
 
-    // 🧩 Read-only guard:
-    // Avoid overwriting memory if the payload indicates a read operation or is nearly empty.
+    // Read-only guard
     const isReadOnly =
       payload.test === "read-memory" ||
       payload.mode === "read-only" ||
       Object.keys(payload).length <= 2;
 
     if (isReadOnly) {
-      console.log("🛡️ Read-only request detected. Skipping write to Reflector API.");
       return res.json({
         ok: true,
         message: "Read-only mode: existing memory preserved.",
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
-    // 🔁 Forward write/update request to Reflector API
-    const response = await fetch(REFLECTOR_API_SYNC, {
+    // Forward to Reflector API's sync endpoint
+    const response = await fetch(REFLECTOR_API_SYNC_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Api-Key": REFLECTOR_API_KEY || "",
+        "X-Api-Key": REFLECTOR_API_KEY || ""
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
-
     const data = await response.json();
     res.json({
       ok: true,
       message: "Data relayed to Reflector API successfully.",
-      backend_response: data,
+      backend_response: data
     });
   } catch (err) {
-    console.error("Reflector sync error:", err);
+    console.error("Reflector proxy sync error:", err);
     res.status(500).json({ ok: false, error: err.message });
   }
 });
 
-// =============================================================
-// 📥 /chronicle/load - Proxy Bridge (read-only, no overwrite)
-// =============================================================
+// ===================== Load Endpoint (Proxy) =====================
 app.post("/chronicle/load", async (req, res) => {
   try {
     const payload = req.body || {};
-    console.log("📤 Incoming load payload:", payload);
+    console.log("📥 Incoming /chronicle/load payload:", payload);
 
-    // Always treat load as read-only: do not write to Reflector API.
-    const response = await fetch(REFLECTOR_API_LOAD, {
+    // Forward to Reflector API's load endpoint
+    const response = await fetch(REFLECTOR_API_LOAD_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Api-Key": REFLECTOR_API_KEY || "",
+        "X-Api-Key": REFLECTOR_API_KEY || ""
       },
       body: JSON.stringify({
-        file_name: payload.file_name || "second_memory.json",
-      }),
+        file_name: payload.file_name || "second_memory.json"
+      })
     });
-
     const data = await response.json();
     res.json({
       ok: true,
-      message: "Data retrieved from Reflector API successfully.",
-      backend_response: data,
+      message: "Data loaded from Reflector API successfully.",
+      backend_response: data
     });
   } catch (err) {
-    console.error("Reflector load error:", err);
+    console.error("Reflector proxy load error:", err);
     res.status(500).json({ ok: false, error: err.message });
   }
 });
 
-// =============================================================
-// 🌐 Root Home Page (審査対応版)
-// =============================================================
+// Root home page
 app.get("/", (req, res) => {
   res.send(`
     <!DOCTYPE html><html lang="en">
@@ -186,7 +155,7 @@ app.get("/", (req, res) => {
     </head>
     <body style="font-family:sans-serif;max-width:800px;margin:auto;line-height:1.6;">
       <h1>Reflector Chronicle Bridge</h1>
-      <p>This service connects Second Chronicle reflection data with Google Drive securely via OAuth 2.0.</p>
+      <p>This service connects Second Chronicle memory, reflection and emotion data with Google Drive securely via OAuth 2.0.</p>
       <p><a href="/auth/google">→ Sign in with Google</a></p>
       <p><a href="/privacy.html">Privacy Policy</a> | <a href="/terms.html">Terms of Service</a></p>
       <p>Contact: <a href="mailto:support@reflector-proxy.onrender.com">support@reflector-proxy.onrender.com</a></p>
@@ -195,10 +164,8 @@ app.get("/", (req, res) => {
   `);
 });
 
-// =============================================================
-// 🚀 Start Server
-// =============================================================
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Reflector Proxy (OAuth + Read-Only Guard) running on port ${PORT}`);
+  console.log(`✅ Reflector Proxy (Unified) running on port ${PORT}`);
 });
